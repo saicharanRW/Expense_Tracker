@@ -1,11 +1,13 @@
-import googleConfig from "../expense_tracker.json";
+// Remove this line completely
+// import googleConfig from "../expense_tracker.json";
 
-const GOOGLE_CLIENT_ID = googleConfig.web.client_id;
-const GOOGLE_CLIENT_SECRET = googleConfig.web.client_secret;
-const GOOGLE_AUTH_URL = googleConfig.web.auth_uri;
-const GOOGLE_TOKEN_URL = googleConfig.web.token_uri;
+// Replace with environment variables
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
+const GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/auth";
+const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo";
-const REDIRECT_URI = googleConfig.web.redirect_uris[0];
+const REDIRECT_URI = process.env.REDIRECT_URI!;
 
 const GOOGLE_SCOPES = [
   "openid",
@@ -31,7 +33,6 @@ export function generateGoogleAuthUrl(state: string): string {
     access_type: "offline",
     prompt: "consent"
   });
-
   return `${GOOGLE_AUTH_URL}?${params.toString()}`;
 }
 
