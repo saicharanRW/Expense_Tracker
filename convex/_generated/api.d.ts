@@ -14,7 +14,13 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as addExpense from "../addExpense.js";
+import type * as auth from "../auth.js";
+import type * as cleanupOrphanedExpenses from "../cleanupOrphanedExpenses.js";
+import type * as env from "../env.js";
 import type * as getExpenses from "../getExpenses.js";
+import type * as migrate from "../migrate.js";
+import type * as migrateExpenses from "../migrateExpenses.js";
+import type * as sendEmail from "../sendEmail.js";
 
 /**
  * A utility for referencing Convex functions in your app's API.
@@ -26,7 +32,13 @@ import type * as getExpenses from "../getExpenses.js";
  */
 declare const fullApi: ApiFromModules<{
   addExpense: typeof addExpense;
+  auth: typeof auth;
+  cleanupOrphanedExpenses: typeof cleanupOrphanedExpenses;
+  env: typeof env;
   getExpenses: typeof getExpenses;
+  migrate: typeof migrate;
+  migrateExpenses: typeof migrateExpenses;
+  sendEmail: typeof sendEmail;
 }>;
 export declare const api: FilterApi<
   typeof fullApi,
