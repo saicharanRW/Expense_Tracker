@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ChartContainer } from "@/components/ui/chart"
 import {
   BarChart,
   Bar,
@@ -39,11 +38,14 @@ const categories = [
 ]
 
 const COLORS = [
-  "hsl(var(--chart-1))",
-  "hsl(var(--chart-2))",
-  "hsl(var(--chart-3))",
-  "hsl(var(--chart-4))",
-  "hsl(var(--chart-5))",
+  "#8884d8",
+  "#82ca9d", 
+  "#ffc658",
+  "#ff7300",
+  "#0088fe",
+  "#00c49f",
+  "#ffbb28",
+  "#ff8042"
 ]
 
 export default function ExpenseTracker() {
@@ -256,7 +258,7 @@ export default function ExpenseTracker() {
           </Card>
         </div>
 
-        <Tabs defaultValue="add-expense" className="space-y-4">
+        <Tabs defaultValue="dashboard" className="space-y-4">
           <TabsList className="grid w-full grid-cols-3 h-auto">
             <TabsTrigger value="dashboard" className="text-xs sm:text-sm">
               Dashboard
@@ -296,229 +298,203 @@ export default function ExpenseTracker() {
                 </CardContent>
               </Card>
             ) : (
-              <div className="grid gap-4 lg:grid-cols-3">
-                {/* Monthly Spending Bar Chart */}
-                <Card className="lg:col-span-2">
+              <>
+                <div className="grid gap-4 lg:grid-cols-3">
+                  {/* Monthly Spending Bar Chart */}
+                  <Card className="lg:col-span-2">
+                    <CardHeader>
+                      <CardTitle className="text-lg sm:text-xl">
+                        Monthly Spending Trend
+                      </CardTitle>
+                      <CardDescription className="text-sm">
+                        Your spending over the last 6 months
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="h-[250px] sm:h-[300px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={monthlyData}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="month" fontSize={12} />
+                            <YAxis />
+                            <Tooltip
+                              formatter={(value) => [`₹${value}`, "Amount"]}
+                            />
+                            <Bar
+                              dataKey="amount"
+                              fill="#8884d8"
+                              radius={[4, 4, 0, 0]}
+                            />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Category Breakdown Pie Chart */}
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg sm:text-xl">
+                        Spending by Category
+                      </CardTitle>
+                      <CardDescription className="text-sm">
+                        Breakdown of expenses
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="h-[250px] sm:h-[300px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={categoryData}
+                              cx="50%"
+                              cy="50%"
+                              labelLine={false}
+                              label={({ name, percent }) =>
+                                `${name.split(" ")[0]} ${(percent * 100).toFixed(
+                                  0
+                                )}%`
+                              }
+                              outerRadius={typeof window !== 'undefined' && window.innerWidth < 640 ? 60 : 80}
+                              fill="#8884d8"
+                              dataKey="value"
+                              fontSize={10}
+                            >
+                              {categoryData.map((entry, index) => (
+                                <Cell
+                                  key={`cell-${index}`}
+                                  fill={COLORS[index % COLORS.length]}
+                                />
+                              ))}
+                            </Pie>
+                            <Tooltip
+                              formatter={(value) => [`₹${value}`, "Amount"]}
+                            />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Daily spending trend chart */}
+                <Card>
                   <CardHeader>
                     <CardTitle className="text-lg sm:text-xl">
-                      Monthly Spending Trend
+                      Daily Spending Pattern
                     </CardTitle>
                     <CardDescription className="text-sm">
-                      Your spending over the last 6 months
+                      Your daily expenses over the last 30 days
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <ChartContainer
-                      config={{
-                        amount: {
-                          label: "Amount (₹)",
-                          color: "hsl(var(--chart-1))",
-                        },
-                      }}
-                      className="h-[250px] sm:h-[300px]"
-                    >
+                    <div className="h-[250px] sm:h-[300px]">
                       <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={monthlyData}>
+                        <AreaChart data={dailySpendingData}>
                           <CartesianGrid strokeDasharray="3 3" />
-                          <XAxis dataKey="month" fontSize={12} />
+                          <XAxis dataKey="date" fontSize={10} />
                           <YAxis />
-                          <Tooltip
-                            formatter={(value) => [`₹${value}`, "Amount"]}
-                          />
-                          <Bar
+                          <Tooltip formatter={(value) => [`₹${value}`, "Amount"]} />
+                          <Area
+                            type="monotone"
                             dataKey="amount"
-                            fill="var(--color-amount)"
-                            radius={[4, 4, 0, 0]}
-                          />
-                        </BarChart>
-                      </ResponsiveContainer>
-                    </ChartContainer>
-                  </CardContent>
-                </Card>
-
-                {/* Category Breakdown Pie Chart */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg sm:text-xl">
-                      Spending by Category
-                    </CardTitle>
-                    <CardDescription className="text-sm">
-                      Breakdown of expenses
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ChartContainer
-                      config={{
-                        value: {
-                          label: "Amount",
-                          color: "hsl(var(--chart-1))",
-                        },
-                      }}
-                      className="h-[250px] sm:h-[300px]"
-                    >
-                      <ResponsiveContainer width="100%" height="100%">
-                        <PieChart>
-                          <Pie
-                            data={categoryData}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            label={({ name, percent }) =>
-                              `${name.split(" ")[0]} ${(percent * 100).toFixed(
-                                0
-                              )}%`
-                            }
-                            outerRadius={window.innerWidth < 640 ? 60 : 80}
+                            stroke="#8884d8"
                             fill="#8884d8"
-                            dataKey="value"
-                            fontSize={10}
-                          >
-                            {categoryData.map((entry, index) => (
-                              <Cell
-                                key={`cell-${index}`}
-                                fill={COLORS[index % COLORS.length]}
-                              />
-                            ))}
-                          </Pie>
-                          <Tooltip
-                            formatter={(value) => [`₹${value}`, "Amount"]}
+                            fillOpacity={0.3}
                           />
-                        </PieChart>
+                        </AreaChart>
                       </ResponsiveContainer>
-                    </ChartContainer>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-
-            {/* Daily spending trend chart */}
-            {expenses.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg sm:text-xl">
-                    Daily Spending Pattern
-                  </CardTitle>
-                  <CardDescription className="text-sm">
-                    Your daily expenses over the last 30 days
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <ChartContainer
-                    config={{
-                      amount: {
-                        label: "Amount (₹)",
-                        color: "hsl(var(--chart-1))",
-                      },
-                    }}
-                    className="h-[250px] sm:h-[300px]"
-                  >
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={dailySpendingData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" fontSize={10} />
-                        <YAxis />
-                        <Tooltip formatter={(value) => [`₹${value}`, "Amount"]} />
-                        <Area
-                          type="monotone"
-                          dataKey="amount"
-                          stroke="var(--color-amount)"
-                          fill="var(--color-amount)"
-                          fillOpacity={0.3}
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </ChartContainer>
-                </CardContent>
-              </Card>
-            )}
-
-            {expenses.length > 0 && (
-              <div className="grid gap-4 md:grid-cols-2">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg sm:text-xl">
-                      Recent Expenses
-                    </CardTitle>
-                    <CardDescription className="text-sm">
-                      Your latest spending activity
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3 sm:space-y-4">
-                      {expenses.slice(0, 5).map((expense) => (
-                        <div
-                          key={expense._id}
-                          className="flex items-center justify-between border-b pb-2"
-                        >
-                          <div className="space-y-1 flex-1 min-w-0">
-                            <p className="text-sm font-medium text-foreground truncate">
-                              {expense.description}
-                            </p>
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <Badge variant="outline" className="text-xs">
-                                {expense.category}
-                              </Badge>
-                              <span className="text-xs text-muted-foreground">
-                                {expense.date}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="text-right ml-2">
-                            <p className="text-sm font-semibold text-foreground">
-                              ₹{expense.amount.toFixed(2)}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
                     </div>
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-lg sm:text-xl">
-                      Top Categories
-                    </CardTitle>
-                    <CardDescription className="text-sm">
-                      Your highest spending categories
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3 sm:space-y-4">
-                      {categoryData
-                        .sort((a, b) => b.value - a.value)
-                        .slice(0, 5)
-                        .map((category, index) => (
+                <div className="grid gap-4 md:grid-cols-2">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg sm:text-xl">
+                        Recent Expenses
+                      </CardTitle>
+                      <CardDescription className="text-sm">
+                        Your latest spending activity
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3 sm:space-y-4">
+                        {expenses.slice(0, 5).map((expense) => (
                           <div
-                            key={category.name}
-                            className="flex items-center justify-between"
+                            key={expense._id}
+                            className="flex items-center justify-between border-b pb-2"
                           >
-                            <div className="flex items-center gap-3 flex-1 min-w-0">
-                              <div
-                                className="w-3 h-3 rounded-full flex-shrink-0"
-                                style={{
-                                  backgroundColor:
-                                    COLORS[index % COLORS.length],
-                                }}
-                              />
-                              <div className="min-w-0">
-                                <p className="text-sm font-medium truncate">
-                                  {category.name}
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                  {category.count} transactions
-                                </p>
+                            <div className="space-y-1 flex-1 min-w-0">
+                              <p className="text-sm font-medium text-foreground truncate">
+                                {expense.description}
+                              </p>
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <Badge variant="outline" className="text-xs">
+                                  {expense.category}
+                                </Badge>
+                                <span className="text-xs text-muted-foreground">
+                                  {expense.date}
+                                </span>
                               </div>
                             </div>
-                            <p className="text-sm font-semibold ml-2">
-                              ₹{category.value.toFixed(2)}
-                            </p>
+                            <div className="text-right ml-2">
+                              <p className="text-sm font-semibold text-foreground">
+                                ₹{expense.amount.toFixed(2)}
+                              </p>
+                            </div>
                           </div>
                         ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-lg sm:text-xl">
+                        Top Categories
+                      </CardTitle>
+                      <CardDescription className="text-sm">
+                        Your highest spending categories
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3 sm:space-y-4">
+                        {categoryData
+                          .sort((a, b) => b.value - a.value)
+                          .slice(0, 5)
+                          .map((category, index) => (
+                            <div
+                              key={category.name}
+                              className="flex items-center justify-between"
+                            >
+                              <div className="flex items-center gap-3 flex-1 min-w-0">
+                                <div
+                                  className="w-3 h-3 rounded-full flex-shrink-0"
+                                  style={{
+                                    backgroundColor:
+                                      COLORS[index % COLORS.length],
+                                  }}
+                                />
+                                <div className="min-w-0">
+                                  <p className="text-sm font-medium truncate">
+                                    {category.name}
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {category.count} transactions
+                                  </p>
+                                </div>
+                              </div>
+                              <p className="text-sm font-semibold ml-2">
+                                ₹{category.value.toFixed(2)}
+                              </p>
+                            </div>
+                          ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </>
             )}
           </TabsContent>
 
