@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { useAuth } from "../contexts/AuthContext";
+import { Id } from "@/convex/_generated/dataModel";
 import {
   Card,
   CardContent,
@@ -71,7 +72,7 @@ const COLORS = [
 
 export default function ExpenseTracker() {
   const { user, logout } = useAuth();
-  const expenses = useQuery(api.getExpenses.getExpenses, user ? { userId: user._id } : "skip") || [];
+  const expenses = useQuery(api.getExpenses.getExpenses, user ? { userId: user._id as Id<"users"> } : "skip") || [];
   const addExpenseMutation = useMutation(api.addExpense.addExpense);
   const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7)); // YYYY-MM format
 
@@ -86,7 +87,7 @@ export default function ExpenseTracker() {
     if (newExpense.amount && newExpense.category && newExpense.description && user) {
       try {
         await addExpenseMutation({
-          userId: user._id,
+          userId: user._id as Id<"users">,
           amount: Number.parseFloat(newExpense.amount),
           category: newExpense.category,
           description: newExpense.description,
