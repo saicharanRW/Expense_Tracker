@@ -1,15 +1,27 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useMutation, useQuery } from "convex/react"
-import { api } from "@/convex/_generated/api"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useState } from "react";
+import { useMutation, useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   BarChart,
   Bar,
@@ -23,8 +35,15 @@ import {
   Tooltip,
   Area,
   AreaChart,
-} from "recharts"
-import { Plus, DollarSign, TrendingUp, Calendar, Filter, TrendingDown } from "lucide-react"
+} from "recharts";
+import {
+  Plus,
+  DollarSign,
+  TrendingUp,
+  Calendar,
+  Filter,
+  TrendingDown,
+} from "lucide-react";
 
 const categories = [
   "Food & Dining",
@@ -35,18 +54,18 @@ const categories = [
   "Healthcare",
   "Travel",
   "Other",
-]
+];
 
 const COLORS = [
   "#8884d8",
-  "#82ca9d", 
+  "#82ca9d",
   "#ffc658",
   "#ff7300",
   "#0088fe",
   "#00c49f",
   "#ffbb28",
-  "#ff8042"
-]
+  "#ff8042",
+];
 
 export default function ExpenseTracker() {
   const expenses = useQuery(api.getExpenses.getExpenses) || [];
@@ -68,7 +87,7 @@ export default function ExpenseTracker() {
           description: newExpense.description,
           date: newExpense.date,
         });
-        
+
         // Reset form after successful addition
         setNewExpense({
           amount: "",
@@ -313,7 +332,10 @@ export default function ExpenseTracker() {
                     <CardContent>
                       <div className="h-[250px] sm:h-[300px]">
                         <ResponsiveContainer width="100%" height="100%">
-                          <BarChart data={monthlyData}>
+                          <BarChart
+                            data={monthlyData}
+                            margin={{ left: -20, right: 0, top: 5, bottom: 5 }}
+                          >
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="month" fontSize={12} />
                             <YAxis />
@@ -351,11 +373,16 @@ export default function ExpenseTracker() {
                               cy="50%"
                               labelLine={false}
                               label={({ name, percent }) =>
-                                `${name.split(" ")[0]} ${(percent * 100).toFixed(
-                                  0
-                                )}%`
+                                `${name.split(" ")[0]} ${(
+                                  percent * 100
+                                ).toFixed(0)}%`
                               }
-                              outerRadius={typeof window !== 'undefined' && window.innerWidth < 640 ? 60 : 80}
+                              outerRadius={
+                                typeof window !== "undefined" &&
+                                window.innerWidth < 640
+                                  ? 60
+                                  : 80
+                              }
                               fill="#8884d8"
                               dataKey="value"
                               fontSize={10}
@@ -390,11 +417,16 @@ export default function ExpenseTracker() {
                   <CardContent>
                     <div className="h-[250px] sm:h-[300px]">
                       <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={dailySpendingData}>
+                        <AreaChart
+                          data={dailySpendingData}
+                          margin={{ left: -20, right: 0, top: 5, bottom: 5 }}
+                        >
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis dataKey="date" fontSize={10} />
                           <YAxis />
-                          <Tooltip formatter={(value) => [`₹${value}`, "Amount"]} />
+                          <Tooltip
+                            formatter={(value) => [`₹${value}`, "Amount"]}
+                          />
                           <Area
                             type="monotone"
                             dataKey="amount"
