@@ -41,7 +41,6 @@ import {
   Plus,
   DollarSign,
   TrendingUp,
-  Calendar,
   Filter,
   TrendingDown,
   LogOut,

@@ -23,11 +23,11 @@ export default function LoginPage() {
 
   useEffect(() => {
     // Check for error or success messages from OAuth callback
-    const errorParam = searchParams.get('error');
-    const emailParam = searchParams.get('email');
-    const nameParam = searchParams.get('name');
-    const pictureParam = searchParams.get('picture');
-    const googleIdParam = searchParams.get('google_id');
+    const errorParam = searchParams.get("error");
+    const emailParam = searchParams.get("email");
+    const nameParam = searchParams.get("name");
+    const pictureParam = searchParams.get("picture");
+    const googleIdParam = searchParams.get("google_id");
 
     if (errorParam) {
       setError(getErrorMessage(errorParam));
@@ -42,12 +42,12 @@ export default function LoginPage() {
         picture: pictureParam || "",
         isVerified: true,
         createdAt: Date.now(),
-        provider: "google"
+        provider: "google",
       };
 
       login(user);
       setInfo("Login successful! Redirecting to dashboard...");
-      
+
       setTimeout(() => {
         router.push("/");
       }, 1500);
@@ -56,16 +56,16 @@ export default function LoginPage() {
 
   const getErrorMessage = (error: string) => {
     switch (error) {
-      case 'no_code':
-        return 'Authentication was cancelled. Please try again.';
-      case 'token_exchange_failed':
-        return 'Authentication failed. Please try again.';
-      case 'user_info_failed':
-        return 'Could not retrieve user information. Please try again.';
-      case 'callback_error':
-        return 'An error occurred during authentication. Please try again.';
+      case "no_code":
+        return "Authentication was cancelled. Please try again.";
+      case "token_exchange_failed":
+        return "Authentication failed. Please try again.";
+      case "user_info_failed":
+        return "Could not retrieve user information. Please try again.";
+      case "callback_error":
+        return "An error occurred during authentication. Please try again.";
       default:
-        return 'Authentication failed. Please try again.';
+        return "Authentication failed. Please try again.";
     }
   };
 
@@ -73,7 +73,9 @@ export default function LoginPage() {
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-bold">Sign in to Expense Tracker</CardTitle>
+          <CardTitle className="text-2xl font-bold">
+            Sign in to Expense Tracker
+          </CardTitle>
           <CardDescription>
             Track your spending and stay on top of your budget
           </CardDescription>
@@ -95,7 +97,7 @@ export default function LoginPage() {
 
           <div className="space-y-4">
             <GoogleSignIn />
-            
+
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
@@ -118,7 +120,9 @@ export default function LoginPage() {
             <Info className="h-4 w-4" />
             <AlertDescription>
               <div className="space-y-2">
-                <p><strong>Why Google Sign-In?</strong></p>
+                <p>
+                  <strong>Why Google Sign-In?</strong>
+                </p>
                 <ul className="text-sm space-y-1">
                   <li>• No passwords to remember</li>
                   <li>• Works perfectly on mobile</li>
@@ -131,13 +135,13 @@ export default function LoginPage() {
 
           <div className="text-center text-sm text-muted-foreground">
             <p>
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <span className="text-primary cursor-pointer hover:underline">
                 Just sign in with Google above
               </span>
             </p>
             <p className="mt-2 text-xs">
-              We'll create an account for you automatically
+              We&apos;ll create an account for you automatically
             </p>
           </div>
         </CardContent>

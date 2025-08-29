@@ -14,13 +14,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Mail, CheckCircle, AlertCircle, MailCheck, Info } from "lucide-react";
+import { Loader2, Mail, AlertCircle, MailCheck, Info } from "lucide-react";
+
+type OtpResult = {
+  success: boolean;
+  message: string;
+  emailFailed?: boolean;
+  error?: string;
+  otpCode?: string;
+  note?: string;
+};
 
 export default function TestEmailPage() {
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<OtpResult | null>(null);
   const [error, setError] = useState("");
+
 
   const sendOtpMutation = useMutation(api.sendOtp.sendOtp);
 

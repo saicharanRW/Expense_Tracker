@@ -105,7 +105,7 @@ export default function AdminPage() {
                 Cleanup Orphaned Expenses
               </CardTitle>
               <CardDescription>
-                Remove expense records that don't have a userId (legacy data)
+                Remove expense records that dont have a userId (legacy data)
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -143,14 +143,14 @@ export default function AdminPage() {
             <div className="space-y-2">
               <h4 className="font-semibold">1. Run Migration First</h4>
               <p className="text-sm text-muted-foreground">
-                This will update existing expense records with missing fields. It's safe to run multiple times.
+                This will update existing expense records with missing fields. It is safe to run multiple times.
               </p>
             </div>
             
             <div className="space-y-2">
               <h4 className="font-semibold">2. Cleanup Orphaned Data (Optional)</h4>
               <p className="text-sm text-muted-foreground">
-                This will remove expense records that don't have a userId. Only run after migration is complete.
+                This will remove expense records that dont have a userId. Only run after migration is complete.
               </p>
             </div>
             
