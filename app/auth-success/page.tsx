@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "../contexts/AuthContext";
 import { useMutation } from "convex/react";
@@ -26,7 +26,8 @@ interface User {
   name?: string; // Make name optional if it's not always required
 }
 
-export default function AuthSuccessPage() {
+// Create a separate component for the auth logic
+function AuthSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { login } = useAuth();
@@ -168,5 +169,35 @@ export default function AuthSuccessPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+// Loading component for Suspense fallback
+function AuthSuccessLoading() {
+  return (
+    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <CardTitle className="text-2xl font-bold">Loading...</CardTitle>
+          <CardDescription>
+            Please wait while we process your authentication
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex justify-center">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+// Main component wrapped with Suspense
+export default function AuthSuccessPage() {
+  return (
+    <Suspense fallback={<AuthSuccessLoading />}>
+      <AuthSuccessContent />
+    </Suspense>
   );
 }
