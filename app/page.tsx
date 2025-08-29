@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useMutation, useQuery } from "convex/react"
 import { api } from "@/convex/_generated/api"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -26,14 +26,6 @@ import {
   AreaChart,
 } from "recharts"
 import { Plus, DollarSign, TrendingUp, Calendar, Filter, TrendingDown } from "lucide-react"
-
-interface Expense {
-  _id: string
-  amount: number
-  category: string
-  description: string
-  date: string
-}
 
 const categories = [
   "Food & Dining",
@@ -87,8 +79,6 @@ export default function ExpenseTracker() {
       }
     }
   };
-
-
 
   // Calculate totals and analytics
   const totalExpenses = expenses.reduce(
@@ -423,17 +413,23 @@ export default function ExpenseTracker() {
                     className="h-[250px] sm:h-[300px]"
                   >
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={monthlyData}>
+                      <AreaChart data={dailySpendingData}>
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" fontSize={12} />
+                        <XAxis dataKey="date" fontSize={10} />
                         <YAxis />
                         <Tooltip formatter={(value) => [`₹${value}`, "Amount"]} />
-                        <Bar dataKey="amount" fill="var(--color-amount)" radius={[4, 4, 0, 0]} />
-                      </BarChart>
+                        <Area
+                          type="monotone"
+                          dataKey="amount"
+                          stroke="var(--color-amount)"
+                          fill="var(--color-amount)"
+                          fillOpacity={0.3}
+                        />
+                      </AreaChart>
                     </ResponsiveContainer>
                   </ChartContainer>
                 </CardContent>
-                </Card>
+              </Card>
             )}
 
             {expenses.length > 0 && (
