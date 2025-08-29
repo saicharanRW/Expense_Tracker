@@ -15,6 +15,17 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle, Loader2, AlertCircle } from "lucide-react";
 
+// Define the User type to match what your auth context expects
+interface User {
+  _id: string;
+  email: string;
+  picture: string;
+  isVerified: boolean;
+  createdAt: number;
+  provider: string;
+  name?: string; // Make name optional if it's not always required
+}
+
 export default function AuthSuccessPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -41,15 +52,18 @@ export default function AuthSuccessPage() {
             googleId: googleIdParam,
           });
 
-          // Login with the user data - temporary fix without name property
-          login({
+          // Login with the user data - properly typed
+          const userForLogin: User = {
             _id: user._id,
             email: user.email,
             picture: user.picture || "",
             isVerified: user.isVerified,
             createdAt: user.createdAt,
             provider: user.provider,
-          } as any); // Temporary type assertion
+            name: user.name, // Include name if it exists in the user object
+          };
+
+          login(userForLogin);
 
           setStatus('success');
           
