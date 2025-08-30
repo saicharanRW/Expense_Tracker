@@ -1,13 +1,11 @@
-// Remove this line completely
-// import googleConfig from "../expense_tracker.json";
+// lib/google-auth.ts
 
-// Replace with environment variables
-const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID!;
-const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET!;
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET as string; // only server-side
 const GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/auth";
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo";
-const REDIRECT_URI = process.env.REDIRECT_URI!;
+const REDIRECT_URI = process.env.NEXT_PUBLIC_REDIRECT_URI || "http://localhost:3000/api/auth/google/callback";
 
 const GOOGLE_SCOPES = [
   "openid",
