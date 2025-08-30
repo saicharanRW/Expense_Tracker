@@ -46,6 +46,7 @@ import {
   TrendingDown,
   LogOut,
   User,
+  CheckCircle,
 } from "lucide-react";
 
 const categories = [
@@ -89,13 +90,23 @@ export default function ExpenseTracker() {
     date: new Date().toISOString().split("T")[0],
   });
 
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Check if all required fields are filled
+  const isFormValid = useMemo(() => {
+    return (
+      newExpense.amount.trim() !== "" &&
+      newExpense.category !== "" &&
+      newExpense.description.trim() !== "" &&
+      newExpense.date !== "" &&
+      parseFloat(newExpense.amount) > 0
+    );
+  }, [newExpense]);
+
   const addExpense = async () => {
-    if (
-      newExpense.amount &&
-      newExpense.category &&
-      newExpense.description &&
-      user
-    ) {
+    if (isFormValid && user && !isSubmitting) {
+      setIsSubmitting(true);
       try {
         await addExpenseMutation({
           userId: user._id as Id<"users">,
@@ -112,8 +123,18 @@ export default function ExpenseTracker() {
           description: "",
           date: new Date().toISOString().split("T")[0],
         });
+
+        // Show success message
+        setShowSuccessMessage(true);
+
+        // Hide success message after 3 seconds
+        setTimeout(() => {
+          setShowSuccessMessage(false);
+        }, 3000);
       } catch (error) {
         console.error("Failed to add expense:", error);
+      } finally {
+        setIsSubmitting(false);
       }
     }
   };
@@ -229,7 +250,18 @@ export default function ExpenseTracker() {
   return (
     <div className="min-h-screen bg-background p-3 sm:p-4 md:p-6">
       <div className="mx-auto max-w-7xl space-y-4 sm:space-y-6">
-        {/* Header */}
+        {/* Success Message */}
+        {showSuccessMessage && (
+          <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
+            <div className="bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg animate-in fade-in-0 slide-in-from-top-2 duration-200 flex items-center gap-3 whitespace-nowrap">
+              <CheckCircle className="h-6 w-6 flex-shrink-0" />
+              <span className="font-medium text-base">
+                Expense added successfully!
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex flex-col gap-2 sm:gap-4 md:flex-row md:items-center md:justify-between">
           <div>
@@ -641,7 +673,7 @@ export default function ExpenseTracker() {
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="amount" className="text-sm">
-                      Amount
+                      Amount *
                     </Label>
                     <Input
                       id="amount"
@@ -653,17 +685,19 @@ export default function ExpenseTracker() {
                         setNewExpense({ ...newExpense, amount: e.target.value })
                       }
                       className="text-base"
+                      required
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="category" className="text-sm">
-                      Category
+                      Category *
                     </Label>
                     <Select
                       value={newExpense.category}
                       onValueChange={(value) =>
                         setNewExpense({ ...newExpense, category: value })
                       }
+                      required
                     >
                       <SelectTrigger className="text-base">
                         <SelectValue placeholder="Select category" />
@@ -680,7 +714,7 @@ export default function ExpenseTracker() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="description" className="text-sm">
-                    Description
+                    Description *
                   </Label>
                   <Input
                     id="description"
@@ -693,11 +727,12 @@ export default function ExpenseTracker() {
                       })
                     }
                     className="text-base"
+                    required
                   />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="date" className="text-sm">
-                    Date
+                    Date *
                   </Label>
                   <Input
                     id="date"
@@ -707,15 +742,31 @@ export default function ExpenseTracker() {
                       setNewExpense({ ...newExpense, date: e.target.value })
                     }
                     className="text-base"
+                    required
                   />
                 </div>
                 <Button
                   onClick={addExpense}
                   className="w-full text-base py-6 sm:py-4"
+                  disabled={!isFormValid || isSubmitting}
                 >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Expense
+                  {isSubmitting ? (
+                    <>
+                      <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                      Adding Expense...
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add Expense
+                    </>
+                  )}
                 </Button>
+                {!isFormValid && (
+                  <p className="text-sm text-muted-foreground text-center">
+                    Please fill in all required fields to add an expense
+                  </p>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
