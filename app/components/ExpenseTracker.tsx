@@ -252,7 +252,7 @@ export default function ExpenseTracker() {
       <div className="mx-auto max-w-7xl space-y-4 sm:space-y-6">
         {/* Success Message */}
         {showSuccessMessage && (
-          <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50">
+          <div className="fixed top-16 left-1/2 transform -translate-x-1/2 z-50">
             <div className="bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg animate-in fade-in-0 slide-in-from-top-2 duration-200 flex items-center gap-3 whitespace-nowrap">
               <CheckCircle className="h-6 w-6 flex-shrink-0" />
               <span className="font-medium text-base">
@@ -264,13 +264,22 @@ export default function ExpenseTracker() {
 
         {/* Header */}
         <div className="flex flex-col gap-2 sm:gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
-              Expense Tracker
-            </h1>
-            <p className="text-sm sm:text-base text-muted-foreground">
-              Track and analyze your spending habits
-            </p>
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
+                Expense Tracker
+              </h1>
+              <p className="text-sm sm:text-base text-muted-foreground">
+                Track and analyze your spending habits
+              </p>
+            </div>
+            {/* Logout Button - Mobile only */}
+            <div className="md:hidden">
+              <Button variant="outline" onClick={handleLogout} size="sm">
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
+            </div>
           </div>
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-2">
             {/* Month Selector - appears first on mobile, inline on desktop */}
@@ -300,11 +309,13 @@ export default function ExpenseTracker() {
                 </span>
               </div>
 
-              {/* Logout Button */}
-              <Button variant="outline" onClick={handleLogout} size="sm">
-                <LogOut className="h-4 w-4 mr-2" />
-                Logout
-              </Button>
+              {/* Logout Button - Desktop only */}
+              <div className="hidden md:block">
+                <Button variant="outline" onClick={handleLogout} size="sm">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </Button>
+              </div>
             </div>
           </div>
         </div>
@@ -699,7 +710,7 @@ export default function ExpenseTracker() {
                       }
                       required
                     >
-                      <SelectTrigger className="text-base">
+                      <SelectTrigger className="text-base w-full">
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                       <SelectContent>
