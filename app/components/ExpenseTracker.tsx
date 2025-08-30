@@ -72,9 +72,15 @@ const COLORS = [
 
 export default function ExpenseTracker() {
   const { user, logout } = useAuth();
-  const expenses = useQuery(api.getExpenses.getExpenses, user ? { userId: user._id as Id<"users"> } : "skip") || [];
+  const expenses =
+    useQuery(
+      api.getExpenses.getExpenses,
+      user ? { userId: user._id as Id<"users"> } : "skip"
+    ) || [];
   const addExpenseMutation = useMutation(api.addExpense.addExpense);
-  const [selectedMonth, setSelectedMonth] = useState(new Date().toISOString().slice(0, 7)); // YYYY-MM format
+  const [selectedMonth, setSelectedMonth] = useState(
+    new Date().toISOString().slice(0, 7)
+  ); // YYYY-MM format
 
   const [newExpense, setNewExpense] = useState({
     amount: "",
@@ -84,7 +90,12 @@ export default function ExpenseTracker() {
   });
 
   const addExpense = async () => {
-    if (newExpense.amount && newExpense.category && newExpense.description && user) {
+    if (
+      newExpense.amount &&
+      newExpense.category &&
+      newExpense.description &&
+      user
+    ) {
       try {
         await addExpenseMutation({
           userId: user._id as Id<"users">,
@@ -114,21 +125,21 @@ export default function ExpenseTracker() {
   // Generate available months for the filter
   const availableMonths = useMemo(() => {
     const monthsSet = new Set<string>();
-    expenses.forEach(expense => {
+    expenses.forEach((expense) => {
       const month = expense.date.slice(0, 7); // YYYY-MM
       monthsSet.add(month);
     });
-    
+
     // Add current month if not present
     const currentMonth = new Date().toISOString().slice(0, 7);
     monthsSet.add(currentMonth);
-    
+
     return Array.from(monthsSet).sort().reverse();
   }, [expenses]);
 
   // Filter expenses by selected month
   const filteredExpenses = useMemo(() => {
-    return expenses.filter(expense => expense.date.startsWith(selectedMonth));
+    return expenses.filter((expense) => expense.date.startsWith(selectedMonth));
   }, [expenses, selectedMonth]);
 
   // Calculate totals and analytics for selected month
@@ -136,7 +147,7 @@ export default function ExpenseTracker() {
     (sum, expense) => sum + expense.amount,
     0
   );
-  
+
   const selectedMonthExpenses = filteredExpenses.reduce(
     (sum, expense) => sum + expense.amount,
     0
@@ -144,7 +155,7 @@ export default function ExpenseTracker() {
 
   // Calculate days in selected month for daily average
   const daysInSelectedMonth = useMemo(() => {
-    const [year, month] = selectedMonth.split('-').map(Number);
+    const [year, month] = selectedMonth.split("-").map(Number);
     return new Date(year, month, 0).getDate();
   }, [selectedMonth]);
 
@@ -193,13 +204,13 @@ export default function ExpenseTracker() {
 
   // Daily spending trend for the selected month
   const dailySpendingData = useMemo(() => {
-    const [year, month] = selectedMonth.split('-').map(Number);
+    const [year, month] = selectedMonth.split("-").map(Number);
     const daysInMonth = new Date(year, month, 0).getDate();
-    
+
     return Array.from({ length: daysInMonth }, (_, i) => {
       const day = i + 1;
-      const dateStr = `${selectedMonth}-${day.toString().padStart(2, '0')}`;
-      
+      const dateStr = `${selectedMonth}-${day.toString().padStart(2, "0")}`;
+
       const dayExpenses = filteredExpenses
         .filter((expense) => expense.date === dateStr)
         .reduce((sum, expense) => sum + expense.amount, 0);
@@ -219,6 +230,7 @@ export default function ExpenseTracker() {
     <div className="min-h-screen bg-background p-3 sm:p-4 md:p-6">
       <div className="mx-auto max-w-7xl space-y-4 sm:space-y-6">
         {/* Header */}
+        {/* Header */}
         <div className="flex flex-col gap-2 sm:gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
@@ -228,31 +240,16 @@ export default function ExpenseTracker() {
               Track and analyze your spending habits
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            {/* User Info */}
-            <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg">
-              <User className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium">{user?.email}</span>
-            </div>
-            
-            {/* Logout Button */}
-            <Button variant="outline" onClick={handleLogout} size="sm">
-              <LogOut className="h-4 w-4 mr-2" />
-              Logout
-            </Button>
-
-            {/* Month Selector */}
-            <Select
-              value={selectedMonth}
-              onValueChange={setSelectedMonth}
-            >
-              <SelectTrigger className="w-[140px]">
+          <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-2">
+            {/* Month Selector - appears first on mobile, inline on desktop */}
+            <Select value={selectedMonth} onValueChange={setSelectedMonth}>
+              <SelectTrigger className="w-full md:w-[140px]">
                 <SelectValue placeholder="Select month" />
               </SelectTrigger>
               <SelectContent>
                 {availableMonths.map((month) => (
                   <SelectItem key={month} value={month}>
-                    {new Date(month + '-01').toLocaleDateString("en-US", {
+                    {new Date(month + "-01").toLocaleDateString("en-US", {
                       month: "long",
                       year: "numeric",
                     })}
@@ -260,6 +257,23 @@ export default function ExpenseTracker() {
                 ))}
               </SelectContent>
             </Select>
+
+            {/* User Info and Logout - second row on mobile, inline on desktop */}
+            <div className="flex items-center gap-2">
+              {/* User Info */}
+              <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg flex-1 md:flex-none">
+                <User className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm font-medium truncate">
+                  {user?.email}
+                </span>
+              </div>
+
+              {/* Logout Button */}
+              <Button variant="outline" onClick={handleLogout} size="sm">
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -292,10 +306,11 @@ export default function ExpenseTracker() {
                 ₹{selectedMonthExpenses.toFixed(2)}
               </div>
               <p className="text-xs text-muted-foreground">
-                {new Date(selectedMonth + '-01').toLocaleDateString("en-US", {
+                {new Date(selectedMonth + "-01").toLocaleDateString("en-US", {
                   month: "long",
                   year: "numeric",
-                })} spending
+                })}{" "}
+                spending
               </p>
             </CardContent>
           </Card>
@@ -414,10 +429,14 @@ export default function ExpenseTracker() {
                         Spending by Category
                       </CardTitle>
                       <CardDescription className="text-sm">
-                        Breakdown of expenses for {new Date(selectedMonth + '-01').toLocaleDateString("en-US", {
-                          month: "long",
-                          year: "numeric",
-                        })}
+                        Breakdown of expenses for{" "}
+                        {new Date(selectedMonth + "-01").toLocaleDateString(
+                          "en-US",
+                          {
+                            month: "long",
+                            year: "numeric",
+                          }
+                        )}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -468,10 +487,14 @@ export default function ExpenseTracker() {
                       Daily Spending Pattern
                     </CardTitle>
                     <CardDescription className="text-sm">
-                      Your daily expenses for {new Date(selectedMonth + '-01').toLocaleDateString("en-US", {
-                        month: "long",
-                        year: "numeric",
-                      })}
+                      Your daily expenses for{" "}
+                      {new Date(selectedMonth + "-01").toLocaleDateString(
+                        "en-US",
+                        {
+                          month: "long",
+                          year: "numeric",
+                        }
+                      )}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -507,10 +530,14 @@ export default function ExpenseTracker() {
                         Recent Expenses
                       </CardTitle>
                       <CardDescription className="text-sm">
-                        Your latest spending activity in {new Date(selectedMonth + '-01').toLocaleDateString("en-US", {
-                          month: "long",
-                          year: "numeric",
-                        })}
+                        Your latest spending activity in{" "}
+                        {new Date(selectedMonth + "-01").toLocaleDateString(
+                          "en-US",
+                          {
+                            month: "long",
+                            year: "numeric",
+                          }
+                        )}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -550,10 +577,14 @@ export default function ExpenseTracker() {
                         Top Categories
                       </CardTitle>
                       <CardDescription className="text-sm">
-                        Your highest spending categories in {new Date(selectedMonth + '-01').toLocaleDateString("en-US", {
-                          month: "long",
-                          year: "numeric",
-                        })}
+                        Your highest spending categories in{" "}
+                        {new Date(selectedMonth + "-01").toLocaleDateString(
+                          "en-US",
+                          {
+                            month: "long",
+                            year: "numeric",
+                          }
+                        )}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
