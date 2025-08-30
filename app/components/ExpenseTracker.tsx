@@ -446,7 +446,7 @@ export default function ExpenseTracker() {
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart
                             data={monthlyData}
-                            margin={{ left: -20, right: 0, top: 5, bottom: 5 }}
+                            margin={{ left: -17, right: 0, top: 5, bottom: 5 }}
                           >
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis dataKey="month" fontSize={12} />
@@ -545,7 +545,7 @@ export default function ExpenseTracker() {
                       <ResponsiveContainer width="100%" height="100%">
                         <AreaChart
                           data={dailySpendingData}
-                          margin={{ left: -20, right: 0, top: 5, bottom: 5 }}
+                          margin={{ left: -17, right: 0, top: 5, bottom: 5 }}
                         >
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis dataKey="date" fontSize={10} />
