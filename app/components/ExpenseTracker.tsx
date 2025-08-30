@@ -263,7 +263,7 @@ export default function ExpenseTracker() {
         )}
 
         {/* Header */}
-        <div className="flex flex-col gap-2 sm:gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-4 sm:gap-4 md:flex-row md:items-start md:justify-between">
           <div className="flex items-start justify-between">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
@@ -273,15 +273,15 @@ export default function ExpenseTracker() {
                 Track and analyze your spending habits
               </p>
             </div>
-            {/* Logout Button - Mobile only */}
-            <div className="md:hidden">
+            {/* Logout Button - Mobile only - moved down */}
+            <div className="md:hidden mt-2">
               <Button variant="outline" onClick={handleLogout} size="sm">
                 <LogOut className="h-4 w-4 mr-2" />
                 Logout
               </Button>
             </div>
           </div>
-          <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-2">
+          <div className="flex flex-col gap-2 md:flex-row md:items-center md:gap-2 md:mt-2">
             {/* Month Selector - appears first on mobile, inline on desktop */}
             <Select value={selectedMonth} onValueChange={setSelectedMonth}>
               <SelectTrigger className="w-full md:w-[140px]">
@@ -309,7 +309,7 @@ export default function ExpenseTracker() {
                 </span>
               </div>
 
-              {/* Logout Button - Desktop only */}
+              {/* Logout Button - Desktop only - moved down */}
               <div className="hidden md:block">
                 <Button variant="outline" onClick={handleLogout} size="sm">
                   <LogOut className="h-4 w-4 mr-2" />
